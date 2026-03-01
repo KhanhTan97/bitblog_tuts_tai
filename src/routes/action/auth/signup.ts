@@ -33,7 +33,7 @@ const signupAction: ActionFunction = async ({ request }) => {
         return {
           ok: false,
           err: err.response?.data,
-        } as  ActionResponse;
+        } as ActionResponse;
       }
     }
   }

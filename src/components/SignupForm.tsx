@@ -95,16 +95,16 @@ export const SignupForm = ({
 
   // // Handle server error response
   useEffect(() => {
-    if(!signupResponse) return;
+    if (!signupResponse) return;
 
-    if(signupResponse.ok) {
+    if (signupResponse.ok) {
       navigate('/', { viewTransition: true });
       return;
-    };
+    }
 
-    if(!signupResponse.err) return;
+    if (!signupResponse.err) return;
 
-    if(signupResponse.err.code === 'AuthorizationError') {
+    if (signupResponse.err.code === 'AuthorizationError') {
       const authorizationError = signupResponse.err as ErrorResponse;
 
       toast.error(authorizationError.message, {
@@ -112,15 +112,26 @@ export const SignupForm = ({
       });
     }
 
-    if(signupResponse.err.code === 'ValidationError') {
+    if (signupResponse.err.code === 'ValidationError') {
       const validationError = signupResponse.err as ValidationError;
 
       Object.entries(validationError.errors).forEach((value) => {
         const [, validationError] = value;
-        const signupField = validationError.path as SignupField
-      })
+        const signupField = validationError.path as SignupField;
+
+        form.setError(
+          signupField,
+          {
+            type: 'custom',
+            message: validationError.msg,
+          },
+          {
+            shouldFocus: true,
+          },
+        );
+      });
     }
-  }, [])
+  }, [signupResponse]);
 
   // Handle form submission
   const onSubmit = useCallback(async (values: z.infer<typeof formSchema>) => {
